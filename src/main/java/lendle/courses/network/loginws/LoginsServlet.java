@@ -22,6 +22,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.*;
+import java.util.*;
+
 
 /**
  *
@@ -43,7 +46,11 @@ public class LoginsServlet extends HttpServlet {
         try (PrintWriter out=response.getWriter(); Connection conn=DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "")) {
             //select from login
             //output in id:password style
-            
+            Statement stmt=conn.createStatement();
+            ResultSet rs=stmt.executeQuery("SELECT * FROM LOGIN");
+            while(rs.next()){
+                out.println(rs.getString("id")+":"+rs.getString("password"));
+            }
             //////////////////////////////
         }catch(Exception e){
             throw new ServletException(e);
@@ -52,10 +59,22 @@ public class LoginsServlet extends HttpServlet {
     
     private void service2(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         response.setContentType("application/json;charset=UTF-8");
-        try (PrintWriter out=response.getWriter(); Connection conn=DriverManager.getConnection("jdbc:derby://localhost:1527/sample", "app", "app")) {
-            //re-implement service1, this time
-            //responde in json format
+        try (PrintWriter out=response.getWriter(); Connection conn=DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "")) {
+            //select from login
+            //output in id:password style
+            Statement stmt=conn.createStatement();
+            ResultSet rs=stmt.executeQuery("SELECT * FROM LOGIN");
+            List ret=new ArrayList();
             
+            while(rs.next()){
+                Map map=new HashMap();
+                map.put("id", rs.getString("id"));
+                map.put("password", rs.getString("password"));
+                ret.add(map);
+                
+            }
+            Gson gson=new Gson();
+            out.print(gson.toJson(ret));
             //////////////////////////////
         }catch(Exception e){
             throw new ServletException(e);
@@ -74,7 +93,8 @@ public class LoginsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        service1(request, response);
+        service2(request, response);
+        ///可調1或2切換
     }
 
 }
