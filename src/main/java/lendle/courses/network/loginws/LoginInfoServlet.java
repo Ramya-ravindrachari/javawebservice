@@ -8,10 +8,13 @@ package lendle.courses.network.loginws;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.System.out;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -43,6 +46,15 @@ public class LoginInfoServlet extends HttpServlet {
             //output in id:password style
             //this time, consider the id parameter
             String id=request.getParameter("id");
+            Statement stmt=conn.createStatement();
+            ResultSet rs=stmt.executeQuery("select * from login where id='"+id+"'");
+            Map map=new HashMap();
+            if(rs.next()){
+                map.put("id", rs.getString("id"));
+                map.put("password", rs.getString("password"));
+            }
+            Gson gson=new Gson();
+            out.print(gson.toJson(map));
             
             //////////////////////////////
         }catch(Exception e){
@@ -85,7 +97,16 @@ public class LoginInfoServlet extends HttpServlet {
         try (PrintWriter out=response.getWriter(); 
                 Connection conn=DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "")) {
             //update the corresponding user
-            
+            String id=request.getParameter("id");
+            String password=request.getParameter("password");
+            PreparedStatement pstmt=conn.prepareStatement("update  login set password=? where id=?");
+            pstmt.setString(1, password);
+            pstmt.setString(2, id);
+            if(pstmt.executeUpdate()==1){
+                out.println("sucess");
+            }else{
+                out.println("fail");
+            }   
             //////////////////////////////
             //out.println(ret);
         }catch(Exception e){
@@ -99,7 +120,16 @@ public class LoginInfoServlet extends HttpServlet {
         try (PrintWriter out=response.getWriter(); 
                 Connection conn=DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "")) {
             //delete the corresponding user
-            
+            String id=request.getParameter("id");
+            Statement s=conn.createStatement();
+            int ret=s.executeUpdate("delete from login where id='"+id+"'");
+
+            if(ret==1){
+                out.println("success");
+            }else{
+                out.println("fail");
+            }   
+        
             //////////////////////////////
             //out.println(ret);
         }catch(Exception e){
@@ -112,12 +142,23 @@ public class LoginInfoServlet extends HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
         try (PrintWriter out=response.getWriter(); Connection conn=DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "")) {
             //insert the corresponding user
+ 
+            String id=request.getParameter("id");
+            String password=request.getParameter("password");
+            PreparedStatement ps=conn.prepareStatement("insert into login(id,password) values (?,?)");
+            ps.setString(1, id);
+            ps.setString(2, password);
+            if(ps.executeUpdate()==1){
+                out.println("success");
+            }else{
+                out.println("fail");
+            }   
             
             //////////////////////////////
-            out.println("success");
+            
         }catch(Exception e){
             throw new ServletException(e);
         }
     }
 
-}
+}///四種不同更新方式
