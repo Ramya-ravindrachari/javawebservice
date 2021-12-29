@@ -32,11 +32,13 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "LoginInfoServlet", urlPatterns = {"/login_info"})
 public class LoginInfoServlet extends HttpServlet {
     static{
+        /*
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoginInfoServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        */
     }
     
     private void getImpl1(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{

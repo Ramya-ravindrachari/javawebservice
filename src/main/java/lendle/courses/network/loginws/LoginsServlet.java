@@ -33,11 +33,13 @@ import java.util.*;
 @WebServlet(name = "LoginsServlet", urlPatterns = {"/logins"})
 public class LoginsServlet extends HttpServlet {
     static{
+        /*
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoginsServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        */
     }
     
     
