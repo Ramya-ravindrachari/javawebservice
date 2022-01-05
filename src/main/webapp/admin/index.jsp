@@ -12,6 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>This is a sercret!</h1>
+        <a href="logout.jsp">Logout</a>
     </body>
 </html>

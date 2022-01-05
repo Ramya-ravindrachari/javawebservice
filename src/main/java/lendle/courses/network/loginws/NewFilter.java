@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -109,8 +110,15 @@ public class NewFilter implements Filter {
         
         Throwable problem = null;
         try {
+            HttpServletRequest httpServleRequest=(HttpServletRequest) request;
+            String user = (String) httpServleRequest.getSession().getAttribute("loggedInUser");
+            if (user != null) {
+                chain.doFilter(request, response);
+            }else{
+            
             HttpServletResponse httpServletResponse=(HttpServletResponse) response;
             httpServletResponse.sendRedirect("/login.jsp");
+            }
             //chain.doFilter(request, response);
             //標註這層
         } catch (Throwable t) {
